@@ -1,19 +1,30 @@
 <?php
 require_once(__DIR__ . '/../../../config.php');
-//$cmid = required_param('id', PARAM_INT);
-//$cm = get_coursemodule_from_id('dmarag', $cmid, 0, false, MUST_EXIST);
-//$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+require_once($CFG->libdir.'/adminlib.php');
  
-//require_login($course, true, $cm);
-//$PAGE->set_url('/tool/dmarag/view.php', array('id' => $cm->id));
+$courseid = required_param('id', PARAM_INT);
+ 
+// Set up the page.
+$title = get_string('pluginname', 'tool_dmarag');
+$pagetitle = $title;
+$url = new moodle_url("/admin/tool/dmarag/index.php");
+$PAGE->set_url($url);
+$PAGE->set_title($title);
+$PAGE->set_heading($title);
+ 
+echo $OUTPUT->header(); 
+echo $OUTPUT->heading($pagetitle);
 
-$PAGE->set_url(new moodle_url('/admin/tool/dmarag/view.php', array('key' => 'value', 'id' => 1)));
-$PAGE->set_title('My tool plugin page title');
-$PAGE->set_heading('My tool page heading');
+$out .= html_writer::tag('br', '');
+$out .= html_writer::start_div('hello_word_div');
+$out .= html_writer::start_span('hello_word_span') . ''.get_string("hello_word", "tool_dmarag").'' . html_writer::end_span();
 
+$out .= html_writer::tag('br', '');
 
-//echo $OUTPUT->header(); 
+$out .= html_writer::start_span('courseid_span') . ''.get_string("course").': '.$courseid.'' . html_writer::end_span();
 
-echo get_string("hello_word", "tool_dmarag");
+html_writer::end_div();
 
-//echo $OUTPUT->footer();
+echo $out;
+
+echo $OUTPUT->footer(); 
