@@ -2,6 +2,7 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot. '/admin/tool/dmarag/lib.php');
+require_once($CFG->dirroot. '/admin/tool/dmarag/classes/tool_dmarag.php');
 
 global $DB;
 $courseid = required_param('id', PARAM_INT);
@@ -33,28 +34,28 @@ $out .= html_writer::tag('br', '');
 $out .= html_writer::start_div('hello_word_div');
 $out .= html_writer::start_span('hello_word_span') . ''.get_string("hello_word", "tool_dmarag").'' . html_writer::end_span();
 $out .= html_writer::end_div();
-
 $out .= html_writer::tag('br', '');
-
 $out .= html_writer::start_div('course_info_div');
-
 $out .= get_string("course");
 $out .= html_writer::tag('br', '');
 $out .= 'id: '.$courseid;
-
 $out .= html_writer::tag('br', '');
-
 $out .= get_string("shortname").': ';
 $out .= $course_shortname;
-
 $out .= html_writer::tag('br', '');
-
 $out .= get_string("fullname").': ';
 $out .= $course_fullname;
-
 $out .= html_writer::tag('br', '');
-
 html_writer::end_div();
+
+// Display new table
+/*$tool_dmarag_table_data = $DB->get_records("tool_dmarag");
+foreach($tool_dmarag_table_data as $data) {
+	print_r($data);
+}*/
+
+$table = new tool_dmarag_table('tool_dmarag', $courseid);
+$table->out(0, false);
 
 echo $out;
 
