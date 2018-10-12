@@ -7,6 +7,16 @@ require_once($CFG->dirroot. '/admin/tool/dmarag/classes/tool_dmarag.php');
 global $DB;
 $courseid = required_param('id', PARAM_INT);
 
+// require_login() to the course
+require_login($courseid);	
+$context = context_course::instance($courseid);
+require_capability('tool/dmarag:view', $context);
+
+if (!has_capability('tool/dmarag:view', $context))
+{
+	
+}
+
 # get course object 
 $course_shortname = "";
 $course_fullname = "";
