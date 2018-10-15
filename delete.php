@@ -43,28 +43,7 @@ if ($mform->is_cancelled())
 }
 else if ($data = $mform->get_data())
 {
-    # create tool_dmarag object
-    $record = new stdClass();
-    $record->courseid = $data->id;
-    $record->name = $data->name;
-    $record->completed = $data->completed;
-
-    if($data->tool_dmarag_id > 0) # edit record
-    {
-        $record->id = $data->tool_dmarag_id;
-        $record->timemodified = time();
-
-        $DB->update_record('tool_dmarag', $record);
-    }
-    else { # add new record
-        //In this case you process validated data. $mform->get_data() returns data posted in form.
-        $record->priority = 0;
-        $record->timecreated = time();
-        $record->timemodified = time();
-
-        $return_id = $DB->insert_record('tool_dmarag', $record, true, false);
-    }
-
+    $DB->delete_records('tool_dmarag', ['id' => $data->tool_dmarag_id]);
     redirect($return_url);
 }
 else {
@@ -73,7 +52,6 @@ else {
 
     //Set default data (if any)
     //$mform->set_data($course);
-
 
     //displays the form
     $mform->display();

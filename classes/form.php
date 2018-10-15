@@ -12,6 +12,7 @@ class tool_dmarag_form extends moodleform
 
         $courseid = optional_param('id', 0, PARAM_INT);
         $tool_dmarag_id = optional_param('tool_dmarag', 0, PARAM_INT);
+        $delete = optional_param('delete', 0, PARAM_INT);
 
 
         $course = $DB->get_record("course", array("id"=>$courseid));
@@ -33,24 +34,56 @@ class tool_dmarag_form extends moodleform
         # course shortname
         $mform->addElement('static', 'course_shortname', get_string('course_shortname', 'tool_dmarag'), $course_shortname, '');
 
-        # tool_dmarag name
-        $mform->addElement('text', 'name', get_string('name', 'tool_dmarag'), array('size'=>'30'));
-        $mform->setDefault('name', $tool_dmarag_name);
-        $mform->setType('name', PARAM_RAW);
+        if($delete != 1)
+        {
+            # add / edit form ##############################################
 
-        # tool_dmarag completed
-        $mform->addElement('advcheckbox', 'completed', get_string('completed', 'tool_dmarag'), '', array('group' => 1), array(0, 1));
-        $mform->setDefault('completed', $tool_dmarag_completed);
+            # tool_dmarag name
+            $mform->addElement('text', 'name', get_string('name', 'tool_dmarag'), array('size' => '30'));
+            $mform->setDefault('name', $tool_dmarag_name);
+            $mform->setType('name', PARAM_RAW);
 
-		# hidden id: tool_dmarag table
-        $mform->addElement('hidden', 'tool_dmarag_id', $tool_dmarag_id);
-        $mform->setType('tool_dmarag_id', PARAM_INT);
+            # tool_dmarag completed
+            $mform->addElement('advcheckbox', 'completed', get_string('completed', 'tool_dmarag'), '', array('group' => 1), array(0, 1));
+            $mform->setDefault('completed', $tool_dmarag_completed);
 
-        # hidden id: courseid
-        $mform->addElement('hidden', 'id', $courseid);
-        $mform->setType('id', PARAM_INT);
+            # hidden id: tool_dmarag table
+            $mform->addElement('hidden', 'tool_dmarag_id', $tool_dmarag_id);
+            $mform->setType('tool_dmarag_id', PARAM_INT);
 
-        $this->add_action_buttons(true);
+            # hidden id: courseid
+            $mform->addElement('hidden', 'id', $courseid);
+            $mform->setType('id', PARAM_INT);
+
+            $this->add_action_buttons(true);
+        }
+        else
+        {
+            # delete form  ##############################################
+
+            $mform->addElement('static', 'name', get_string('name', 'tool_dmarag'));
+            $mform->setDefault('name', $tool_dmarag_name);
+
+            $tool_dmarag_completed_text = "";
+            $mform->addElement('static', 'completed', get_string('completed', 'tool_dmarag'));
+            if($tool_dmarag_completed == 1) {
+                # completed
+                $tool_dmarag_completed_text = get_string('completed', 'tool_dmarag');
+            }
+
+            $mform->setDefault('completed', $tool_dmarag_completed_text);
+
+            # hidden id: tool_dmarag table
+            $mform->addElement('hidden', 'tool_dmarag_id', $tool_dmarag_id);
+            $mform->setType('tool_dmarag_id', PARAM_INT);
+
+            # hidden id: courseid
+            $mform->addElement('hidden', 'id', $courseid);
+            $mform->setType('id', PARAM_INT);
+
+            $this->add_action_buttons(true, get_string('delete_this_record', 'tool_dmarag'));
+
+        }
     }
 
     public function validation($data, $files) 

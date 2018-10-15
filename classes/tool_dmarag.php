@@ -11,7 +11,7 @@ class tool_dmarag_table extends table_sql
         global $PAGE;
         parent::__construct($uniqueid);
 
-        $this->define_columns(array('id', 'name', 'completed', 'priority', 'timecreated', 'timemodified'));
+        $this->define_columns(array('id', 'name', 'completed', 'priority', 'timecreated', 'timemodified', 'delete'));
         $this->define_headers(array(
             'id',
             get_string('name', 'tool_dmarag'),
@@ -19,6 +19,7 @@ class tool_dmarag_table extends table_sql
             get_string('priority', 'tool_dmarag'),
             get_string('timecreated', 'tool_dmarag'),
             get_string('timemodified', 'tool_dmarag'),
+            ''
         ));
         $this->pageable(false);
         $this->collapsible(false);
@@ -55,5 +56,12 @@ class tool_dmarag_table extends table_sql
     // Display timemodified
     protected function col_timemodified($row) {
         return userdate($row->timemodified, get_string('strftimedatetime'));
+    }
+
+    protected function col_delete($row)
+    {
+        $courseid = optional_param('id', 0, PARAM_INT);
+        $delete = html_writer::link(new moodle_url('/admin/tool/dmarag/delete.php', ['id' => $courseid, 'tool_dmarag' => $row->id, 'delete'=>1]), get_string('delete'));
+        return $delete;
     }
 }
