@@ -10,11 +10,11 @@ class tool_dmarag_table extends table_sql
 	{
         global $PAGE;
         parent::__construct($uniqueid);
-		
+
         $this->define_columns(array('id', 'name', 'completed', 'priority', 'timecreated', 'timemodified'));
         $this->define_headers(array(
             'id',
-			get_string('name', 'tool_dmarag'),
+            get_string('name', 'tool_dmarag'),
             get_string('completed', 'tool_dmarag'),
             get_string('priority', 'tool_dmarag'),
             get_string('timecreated', 'tool_dmarag'),
@@ -30,8 +30,11 @@ class tool_dmarag_table extends table_sql
     }
 	
 	// Display name
-    protected function col_name($row) {
-        return format_string($row->name, true, ['context' => $this->context]);
+    protected function col_name($row)
+    {
+        $courseid = optional_param('id', 0, PARAM_INT);
+        $name = html_writer::link(new moodle_url('/admin/tool/dmarag/edit.php', ['id' => $courseid, 'tool_dmarag' => $row->id]), $row->name);
+        return $name;
     }
 	
 	// Display completed

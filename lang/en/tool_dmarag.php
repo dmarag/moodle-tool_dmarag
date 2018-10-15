@@ -8,3 +8,5 @@ $string['priority'] = 'Priority';
 $string['timecreated'] = 'Time created';
 $string['timemodified'] = 'Time modified';
 
+$string['course_shortname'] = 'Course';
+

@@ -40,7 +40,7 @@ $PAGE->set_heading($title);
 echo $OUTPUT->header(); 
 echo $OUTPUT->heading($pagetitle);
 
-$out .= html_writer::tag('br', '');
+/*$out .= html_writer::tag('br', '');
 $out .= html_writer::start_div('hello_word_div');
 $out .= html_writer::start_span('hello_word_span') . ''.get_string("hello_word", "tool_dmarag").'' . html_writer::end_span();
 $out .= html_writer::end_div();
@@ -56,16 +56,17 @@ $out .= html_writer::tag('br', '');
 $out .= get_string("fullname").': ';
 $out .= $course_fullname;
 $out .= html_writer::tag('br', '');
-html_writer::end_div();
+html_writer::end_div();*/
 
-// Display new table
-/*$tool_dmarag_table_data = $DB->get_records("tool_dmarag");
-foreach($tool_dmarag_table_data as $data) {
-	print_r($data);
-}*/
 
 $table = new tool_dmarag_table('tool_dmarag', $courseid);
 $table->out(0, false);
+
+// Link to add new entry.
+if (has_capability('tool/dmarag:edit', $context)) {
+    echo html_writer::div(html_writer::link(new moodle_url('/admin/tool/dmarag/edit.php', ['id' => $courseid]), get_string('new')));
+}
+
 
 echo $out;
 
