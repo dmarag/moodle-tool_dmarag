@@ -11,10 +11,11 @@ class tool_dmarag_table extends table_sql
         global $PAGE;
         parent::__construct($uniqueid);
 
-        $this->define_columns(array('id', 'name', 'completed', 'priority', 'timecreated', 'timemodified', 'delete'));
+        $this->define_columns(array('id', 'name', 'description', 'completed', 'priority', 'timecreated', 'timemodified', 'delete'));
         $this->define_headers(array(
             'id',
             get_string('name', 'tool_dmarag'),
+            get_string('description', 'tool_dmarag'),
             get_string('completed', 'tool_dmarag'),
             get_string('priority', 'tool_dmarag'),
             get_string('timecreated', 'tool_dmarag'),
@@ -27,7 +28,7 @@ class tool_dmarag_table extends table_sql
         $this->is_downloadable(false);
         $this->define_baseurl($PAGE->url);
         $this->context = context_course::instance($courseid);
-        $this->set_sql( 'id, name, completed, priority, timecreated, timemodified', '{tool_dmarag}', 'courseid = ?', [$courseid]);
+        $this->set_sql( 'id, name, completed, description, priority, timecreated, timemodified', '{tool_dmarag}', 'courseid = ?', [$courseid]);
     }
 	
 	// Display name
@@ -37,6 +38,19 @@ class tool_dmarag_table extends table_sql
         $name = html_writer::link(new moodle_url('/admin/tool/dmarag/edit.php', ['id' => $courseid, 'tool_dmarag' => $row->id]), $row->name);
         return $name;
     }
+
+    // Description text
+    protected function col_description($row)
+    {
+        $description = "-";
+        if(!empty($row->description)){
+            $description = $row->description;
+        }
+
+        return $description;
+    }
+
+    //$data->description_editor
 	
 	// Display completed
 	 protected function col_completed($row) {

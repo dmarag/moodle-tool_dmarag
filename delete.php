@@ -10,6 +10,8 @@ global $DB;
 $courseid = required_param('id', PARAM_INT);
 $tool_dmarag_table_id = optional_param('tool_dmarag', 0, PARAM_INT);
 
+$entry = $DB->get_record("tool_dmarag", array("id" => $tool_dmarag_table_id));
+
 // require_login() to the course
 require_login($courseid);	
 $context = context_course::instance($courseid);
@@ -31,7 +33,8 @@ echo $OUTPUT->heading($pagetitle);
 echo '<br>';
 echo '<br>';
 
-$mform = new tool_dmarag_form();
+$mform = new tool_dmarag_form( null, array('current'=>$entry) );
+//$mform = new tool_dmarag_form();
 
 //Form processing and displaying is done here
 $return_url_cancel = new moodle_url('/admin/tool/dmarag/index.php', ['id' => $courseid]);

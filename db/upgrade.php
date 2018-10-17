@@ -35,25 +35,50 @@ function xmldb_tool_dmarag_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018101105, 'tool', 'dmarag');
     }
 	
-	if ($oldversion < 2018101105) 
-	{
-		$table = new xmldb_table('tool_dmarag');
-			
-		// Define key courseid (foreign) to be added to tool_dmarag.
-		$key = new xmldb_key('courseid', XMLDB_KEY_FOREIGN, array('courseid'), 'course', array('id'));
-		// Launch add key courseid.
-		$dbman->add_key($table, $key);
-			
-		// Define index index (unique) to be added to tool_dmarag.
-		$index = new xmldb_index('index', XMLDB_INDEX_UNIQUE, array('courseid', 'name'));
+	if ($oldversion < 2018101105)
+    {
+        $table = new xmldb_table('tool_dmarag');
 
-		// Conditionally launch add index index.
-		if (!$dbman->index_exists($table, $index)) {
-			$dbman->add_index($table, $index);
-		}
+        // Define key courseid (foreign) to be added to tool_dmarag.
+        $key = new xmldb_key('courseid', XMLDB_KEY_FOREIGN, array('courseid'), 'course', array('id'));
+        // Launch add key courseid.
+        $dbman->add_key($table, $key);
 
-		// Dmarag savepoint reached.
-		upgrade_plugin_savepoint(true, 2018101105, 'tool', 'dmarag');
+        // Define index index (unique) to be added to tool_dmarag.
+        $index = new xmldb_index('index', XMLDB_INDEX_UNIQUE, array('courseid', 'name'));
+
+        // Conditionally launch add index index.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Dmarag savepoint reached.
+        upgrade_plugin_savepoint(true, 2018101105, 'tool', 'dmarag');
+    }
+
+    if ($oldversion < 2018101500)
+    {
+        $table = new xmldb_table('tool_dmarag');
+
+        // add new field description
+        $field = new xmldb_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field description.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // add new field descriptionformat
+        $field2 = new xmldb_field('descriptionformat', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'description');
+
+        // Conditionally launch add field descriptionformat.
+        if (!$dbman->field_exists($table, $field2)) {
+            $dbman->add_field($table, $field2);
+        }
+
+
+        // Dmarag savepoint reached.
+        upgrade_plugin_savepoint(true, 2018101500, 'tool', 'dmarag');
     }
 
 

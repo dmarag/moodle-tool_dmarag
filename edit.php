@@ -6,15 +6,33 @@ require_once($CFG->dirroot. '/admin/tool/dmarag/lib.php');
 require_once($CFG->dirroot. '/admin/tool/dmarag/classes/tool_dmarag.php');
 require_once($CFG->dirroot. '/admin/tool/dmarag/classes/form.php');
 
-global $DB;
+global $CFG, $COURSE, $DB;
 $courseid = required_param('id', PARAM_INT);
 $tool_dmarag_table_id = optional_param('tool_dmarag', 0, PARAM_INT);
 
 // require_login() to the course
 require_login($courseid);	
 $context = context_course::instance($courseid);
+
+// require capability edit
 require_capability('tool/dmarag:edit', $context);
 
+# get course record
+$course = $DB->get_record("course", array("id" => $courseid));
+
+$edit = 0;
+
+if($tool_dmarag_table_id > 0)
+{
+    // get tool_dmarag record
+    $entry = $DB->get_record("tool_dmarag", array("id" => $tool_dmarag_table_id));
+    $edit = 1;
+
+} else {
+    $entry = new stdClass();
+    $entry->id = 0;
+    $entry->courseid = $courseid;
+}
 
 // Set up the page.
 $title = get_string('pluginname', 'tool_dmarag');
@@ -28,43 +46,35 @@ $PAGE->set_heading($title);
  
 echo $OUTPUT->header(); 
 echo $OUTPUT->heading($pagetitle);
-echo '<br>';
-echo '<br>';
+echo '</br></br>';
 
-$mform = new tool_dmarag_form();
+
+if($edit == 1)
+{
+    // create form and set initial data
+    $descriptionoptions = dmarag_get_editor_options($course, $context, $entry);
+
+    //prepare data
+    $entry = file_prepare_standard_editor($entry, 'description', $descriptionoptions, $context, 'tool_dmarag', 'entry', $entry->id);
+    $mform = new tool_dmarag_form(null, array('current'=>$entry, 'descriptionoptions'=>$descriptionoptions));
+
+}
+else{
+    $mform = new tool_dmarag_form( null, array('current'=>$entry) );
+}
+
+
 
 //Form processing and displaying is done here
-$return_url_cancel = new moodle_url('/admin/tool/dmarag/index.php', ['id' => $courseid]);
 $return_url = new moodle_url('/admin/tool/dmarag/index.php', ['id' => $courseid]);
 if ($mform->is_cancelled())
 {
     //Handle form cancel operation, if cancel button is present on form
-    redirect($return_url_cancel);
+    redirect($return_url);
 }
 else if ($data = $mform->get_data())
 {
-    # create tool_dmarag object
-    $record = new stdClass();
-    $record->courseid = $data->id;
-    $record->name = $data->name;
-    $record->completed = $data->completed;
-
-    if($data->tool_dmarag_id > 0) # edit record
-    {
-        $record->id = $data->tool_dmarag_id;
-        $record->timemodified = time();
-
-        $DB->update_record('tool_dmarag', $record);
-    }
-    else { # add new record
-        //In this case you process validated data. $mform->get_data() returns data posted in form.
-        $record->priority = 0;
-        $record->timecreated = time();
-        $record->timemodified = time();
-
-        $return_id = $DB->insert_record('tool_dmarag', $record, true, false);
-    }
-
+    $entry = dmarag_edit_entry($data, $course, $context);
     redirect($return_url);
 }
 else {

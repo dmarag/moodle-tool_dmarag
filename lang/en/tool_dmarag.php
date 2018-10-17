@@ -11,4 +11,6 @@ $string['timemodified'] = 'Time modified';
 $string['course_shortname'] = 'Course';
 
 $string['delete_this_record'] = 'Delete this record';
+$string['description'] = 'Description';
+$string['definition'] = 'Definition';
 
