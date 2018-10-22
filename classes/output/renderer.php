@@ -44,8 +44,20 @@ class renderer extends \plugin_renderer_base
         $table->align = $align;
         $table->data = $data;
         return \html_writer::table($table);
-    } 
-	
+    }
+
+    # Render a questionnaire index page.
+    # @param \templatable $indexpage
+    # @return string|boolean
+
+    public function render_indexpage(\templatable $indexpage)
+    {
+        $data = $indexpage->export_for_template($this);
+
+        return $this->render_from_template('tool_dmarag/indexpage', $data);
+    }
+
+
 }
 
 # Note.

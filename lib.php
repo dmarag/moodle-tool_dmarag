@@ -132,6 +132,7 @@ function get_tool_dmarag_table_data($courseid)
         $description = $record->description;
         $completed = $record->completed ? get_string('yes') : get_string('no');
         $priority = $record->priority ? get_string('yes') : get_string('no');
+
         $timecreated = userdate($record->timecreated, '');
         $timemodified = userdate($record->timemodified, get_string('strftimedatetime'));
 

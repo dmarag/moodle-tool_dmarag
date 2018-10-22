@@ -27,13 +27,26 @@ echo $output->header();
 
 //echo $OUTPUT->header();
 
-$headings = array(get_string('table_title', 'tool_dmarag'));
+
+$headings = array(get_string('table_title', 'tool_dmarag'), "", "", "", "", "", "", "" );
 $align = array('left'); 
 
 $content = array();
 $content = get_tool_dmarag_table_data($courseid);
 
-echo $output->render_index($headings, $align, $content);
+
+//echo $output->render_index($headings, $align, $content);
+
+//print_r($content);
+//echo '<br/>';echo '<br/>';echo '<br/>';echo '<br/>';
+
+
+$indexpage = new \tool_dmarag\output\indexpage($headings, $content);
+
+//print_r($indexpage);
+
+echo $output->render_indexpage($indexpage);
+
 
 # Add new entry.
 if (has_capability('tool/dmarag:edit', $context))

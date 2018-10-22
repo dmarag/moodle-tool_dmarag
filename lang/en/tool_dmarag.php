@@ -13,6 +13,6 @@ $string['course_shortname'] = 'Course';
 $string['delete_this_record'] = 'Delete this record';
 $string['description'] = 'Description';
 
-$string['table_title'] = 'List tool_dmarag table data';
+$string['table_title'] = 'List';
 $string['add_new'] = 'Add new';
 
