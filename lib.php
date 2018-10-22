@@ -107,3 +107,39 @@ function dmarag_addnew_entry($entry, $course, $context) {
 
     return $record;
 }
+
+
+# for renderer
+function get_tool_dmarag_table_data($courseid)
+{
+    global $DB;
+
+    $records = $DB->get_records("tool_dmarag");
+
+    $data[] = array('id',
+                    get_string('name', 'tool_dmarag'),
+                    get_string('description', 'tool_dmarag'),
+                    get_string('completed', 'tool_dmarag'),
+                    get_string('priority', 'tool_dmarag'),
+                    get_string('timecreated', 'tool_dmarag'),
+                    get_string('timemodified', 'tool_dmarag'),
+                    '');
+
+    foreach ($records as $record)
+    {
+        $id = $record->id;
+        $name = html_writer::link(new moodle_url('/admin/tool/dmarag/edit.php', ['id' => $courseid, 'tool_dmarag' => $record->id]), $record->name);
+        $description = $record->description;
+        $completed = $record->completed ? get_string('yes') : get_string('no');
+        $priority = $record->priority ? get_string('yes') : get_string('no');
+        $timecreated = userdate($record->timecreated, '');
+        $timemodified = userdate($record->timemodified, get_string('strftimedatetime'));
+
+        $delete = html_writer::link(new moodle_url('/admin/tool/dmarag/delete.php', ['id' => $record->courseid, 'tool_dmarag' => $record->id, 'delete'=>1]), get_string('delete'));
+
+        $data[] = array($id, $name, $description, $completed, $priority, $timecreated, $timemodified, $delete);
+    }
+
+    return $data;
+
+}

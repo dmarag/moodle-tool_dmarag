@@ -20,7 +20,7 @@ class tool_dmarag_table extends table_sql
             get_string('priority', 'tool_dmarag'),
             get_string('timecreated', 'tool_dmarag'),
             get_string('timemodified', 'tool_dmarag'),
-            ''
+            '-'
         ));
         $this->pageable(false);
         $this->collapsible(false);
@@ -28,7 +28,7 @@ class tool_dmarag_table extends table_sql
         $this->is_downloadable(false);
         $this->define_baseurl($PAGE->url);
         $this->context = context_course::instance($courseid);
-        $this->set_sql( 'id, name, completed, description, priority, timecreated, timemodified', '{tool_dmarag}', 'courseid = ?', [$courseid]);
+        $this->set_sql( 'id, name, completed, description, priority, timecreated, timemodified, delete', '{tool_dmarag}', 'courseid = ?', [$courseid]);
     }
 	
 	// Display name

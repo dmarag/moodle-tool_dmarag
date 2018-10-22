@@ -12,6 +12,7 @@ $string['course_shortname'] = 'Course';
 
 $string['delete_this_record'] = 'Delete this record';
 $string['description'] = 'Description';
-$string['definition'] = 'Definition';
 
-$string['errornameexists'] = 'Already exist record with the same name';
+$string['table_title'] = 'List tool_dmarag table data';
+$string['add_new'] = 'Add new';
+
