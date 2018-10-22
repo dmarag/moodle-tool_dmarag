@@ -15,14 +15,21 @@ class tool_dmarag_form extends moodleform
         $course_shortname = "";
         $tool_dmarag_name = "";
         $tool_dmarag_description_text = "";
+        $tool_dmarag_completed = 0;
 
         $mform = $this->_form;
 
-        $currententry      = $this->_customdata['current'];
-        $descriptionoptions = $this->_customdata['descriptionoptions'];
+        $tool_dmarag_id = 0;
+        $courseid = 0;
 
-        $tool_dmarag_id = $this->_customdata['current']->id;
-        $courseid = $this->_customdata['current']->courseid;
+        if(!empty($this->_customdata['current']->id)) {
+            $tool_dmarag_id = $this->_customdata['current']->id;
+        }
+        if(!empty($this->_customdata['current']->courseid)) {
+            $courseid = $this->_customdata['current']->courseid;
+        }
+
+        $context = context_course::instance($courseid);
 
         if(!empty($courseid) && $courseid > 0)
         {
@@ -43,21 +50,21 @@ class tool_dmarag_form extends moodleform
         # course shortname
         $mform->addElement('static', 'course_shortname', get_string('course_shortname', 'tool_dmarag'), $course_shortname, '');
 
-        # hidden id: tool_dmarag table id
+        # hidden id: course table id
         $mform->addElement('hidden', 'id', $courseid);
-        $mform->setType('id', PARAM_INT);
 
         # hidden courseid: courseid
         $mform->addElement('hidden', 'courseid', $courseid);
-        $mform->setType('courseid', PARAM_INT);
 
         # hidden id: tool_dmarag table id
         $mform->addElement('hidden', 'tool_dmarag_id', $tool_dmarag_id);
-        $mform->setType('tool_dmarag_id', PARAM_INT);
 
         if($delete != 1)
         {
             # add / edit form ##############################################
+
+            $currententry      = $this->_customdata['current'];
+            $descriptionoptions = $this->_customdata['descriptionoptions'];
 
             # tool_dmarag name
             $mform->addElement('text', 'name', get_string('name', 'tool_dmarag'), array('size' => '30'));
@@ -84,29 +91,27 @@ class tool_dmarag_form extends moodleform
 
 
             $this->add_action_buttons(true);
-            //$this->set_data($currententry);
         }
-        else
-                {
-                    # delete form  ##############################################
-                    $mform->addElement('static', 'name', get_string('name', 'tool_dmarag'));
-                    $mform->setDefault('name', $tool_dmarag_name);
+        else {
+            # delete form  ##############################################
+            $mform->addElement('static', 'name', get_string('name', 'tool_dmarag'));
+            $mform->setDefault('name', $tool_dmarag_name);
 
-                    $tool_dmarag_completed_text = "";
-                    $mform->addElement('static', 'completed', get_string('completed', 'tool_dmarag'));
-                    if($tool_dmarag_completed == 1) {
-                        # completed
-                        $tool_dmarag_completed_text = get_string('completed', 'tool_dmarag');
-                    }
-                    else{
-                        $tool_dmarag_completed_text = "-";
-                    }
+            $tool_dmarag_completed_text = "";
+            $mform->addElement('static', 'completed', get_string('completed', 'tool_dmarag'));
+            if($tool_dmarag_completed == 1) {
+                # completed
+                $tool_dmarag_completed_text = get_string('completed', 'tool_dmarag');
+            }
+            else{
+                $tool_dmarag_completed_text = "-";
+            }
 
-                    $mform->setDefault('completed', $tool_dmarag_completed_text);
+            $mform->setDefault('completed', $tool_dmarag_completed_text);
 
-                    $this->add_action_buttons(true, get_string('delete_this_record', 'tool_dmarag'));
+            $this->add_action_buttons(true, get_string('delete_this_record', 'tool_dmarag'));
 
-                }
+        }
     }
 
     public function validation($data, $files) 
@@ -114,11 +119,18 @@ class tool_dmarag_form extends moodleform
         global $DB;
         $errors = parent::validation($data, $files);
         // Check that name is unique for the course.
-       /* if ($DB->record_exists_select('tool_dmarag',
-            'name = :name AND id <> :id AND courseid = :courseid',
-            ['name' => $data['name'], 'id' => $data['id'], 'courseid' => $data['courseid']])) {
-            $errors['name'] = get_string('errornameexists', 'tool_dmarag');
-        }*/
+
+        if($data['tool_dmarag_id'] > 0) {
+
+        }
+        else{
+            if ($DB->record_exists_select('tool_dmarag',
+                'name = :name AND id <> :id AND courseid = :courseid',
+                ['name' => $data['name'], 'id' => $data['id'], 'courseid' => $data['courseid']])) {
+                $errors['name'] = get_string('errornameexists', 'tool_dmarag');
+            }
+        }
+
         return $errors;
     }
 

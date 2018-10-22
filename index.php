@@ -20,7 +20,7 @@ if (!has_capability('tool/dmarag:view', $context))
 # get course object 
 $course_shortname = "";
 $course_fullname = "";
-//$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+
 $course = $DB->get_record_sql("SELECT * FROM {course} WHERE id = ?", [$courseid]);
 if(!empty($course))
 {
@@ -56,11 +56,12 @@ $out .= html_writer::tag('br', '');
 $out .= get_string("fullname").': ';
 $out .= $course_fullname;
 $out .= html_writer::tag('br', '');
-html_writer::end_div();*/
-
+html_writer::end_div();
+echo $out;
+*/
 
 $table = new tool_dmarag_table('tool_dmarag', $courseid);
-$table->out(0, false);
+$table->out(0, true);
 
 // Link to add new entry.
 if (has_capability('tool/dmarag:edit', $context)) {
@@ -68,6 +69,5 @@ if (has_capability('tool/dmarag:edit', $context)) {
 }
 
 
-echo $out;
 
-echo $OUTPUT->footer(); 
+echo $OUTPUT->footer();

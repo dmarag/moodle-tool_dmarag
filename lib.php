@@ -28,48 +28,66 @@ function dmarag_get_editor_options($course, $context, $entry)
     return $descriptionoptions;
 }
 
-
-function dmarag_edit_entry($entry, $course, $context) {
-    global $DB, $USER;
+# update tool record
+function dmarag_edit_entry($entry, $course, $tool_id, $context)
+{
+    global $CFG, $DB, $USER;
 
     $record = new stdClass();
-    if (empty($entry->tool_dmarag_id))
-    {
-        # new record
-
-        $record->courseid = $entry->courseid;
-        $record->name = $entry->name;
-        $record->completed = $entry->completed;
-        $record->priority = 0;
-        $record->timecreated = time();
-        $record->timemodified = time();
-
-        $isnewentry              = true;
-    }
-    else {
-        #update record
-
-        $record->id = $entry->tool_dmarag_id;
-        $record->courseid = $entry->courseid;
-        $record->name = $entry->name;
-        $record->completed = $entry->completed;
-        $record->timemodified = time();
-
-        $isnewentry              = false;
-    }
+    $record->id = $tool_id;
+    $record->courseid = $entry->courseid;
+    $record->name = $entry->name;
+    $record->completed = $entry->completed;
+    $record->timemodified = time();
 
     $record->description       = '';          // Updated later.
     $record->descriptionformat = FORMAT_HTML; // Updated later.
     $record->descriptiontrust  = 0;           // Updated later.
 
+    $DB->update_record('tool_dmarag', $record);
 
-    if ($isnewentry) {
-        // Add new entry.
-        $record->id = $DB->insert_record('tool_dmarag', $record);
-    } else {
-        // Update existing entry.
-        $DB->update_record('tool_dmarag', $record);
+
+    // Save and relink embedded images and save attachments.
+    if (!empty($entry->description_editor)) {
+        $descriptionoptions = dmarag_get_editor_options($course, $context, $record);
+        $record = file_postupdate_standard_editor($record, 'description', $descriptionoptions, $context, 'tool_dmarag', 'entry', $record->id);
+
+        $record->description = $entry->description_editor['text'];
+        $record->descriptionformat = $entry->description_editor['format'];
     }
+
+    //$record->description = $entry->description_editor;
+    // Store the updated value values.
+    $DB->update_record('tool_dmarag', $record);
+
+    // Refetch complete entry.
+    $record = $DB->get_record('tool_dmarag', array('id' => $record->id));
+
+    //$courseid = $record->courseid;
+    //redirect(new moodle_url($CFG->wwwroot.'/admin/tool/dmarag/index.php', ['id' => $courseid]));
+
+    return $record;
+}
+
+# add new record
+function dmarag_addnew_entry($entry, $course, $context) {
+    global $CFG, $DB, $USER;
+
+    $record = new stdClass();
+
+    $record->courseid = $entry->courseid;
+    $record->name = $entry->name;
+    $record->completed = $entry->completed;
+    $record->priority = 0;
+    $record->timecreated = time();
+    $record->timemodified = time();
+
+    $record->description       = '';          // Updated later.
+    $record->descriptionformat = FORMAT_HTML; // Updated later.
+    $record->descriptiontrust  = 0;           // Updated later.
+
+    $record->id = $DB->insert_record('tool_dmarag', $record);
+
 
     // Save and relink embedded images and save attachments.
     if (!empty($entry->description_editor)) {
