@@ -28,7 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 # Class tool_dmarag_renderer
 class renderer extends \plugin_renderer_base
 {
-	# My class will contain functions with names that define the output.
+
+    # My class will contain functions with names that define the output.
 	# For this example, since I am rendering the index page, I will create a function called render_index.
 	
 	# Renders the HTML for the index page.
@@ -56,7 +57,6 @@ class renderer extends \plugin_renderer_base
 
         return $this->render_from_template('tool_dmarag/indexpage', $data);
     }
-
 
 }
 

@@ -93,3 +93,13 @@
 {{/rows}}
   </tbody>
 </table>
+
+{{#js}}
+    require(
+    ['tool_dmarag/confirm'],
+    function(
+    c
+    ) {
+    c.init('[data-action=deleteentry]');
+    });
+{{/js}}

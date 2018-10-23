@@ -3,6 +3,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2018102203;  	// The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2018102302;  	// The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2018050800; 	// Requires this Moodle version.
 $plugin->component = 'tool_dmarag'; // Full name of the plugin (used for diagnostics).

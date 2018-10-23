@@ -136,11 +136,18 @@ function get_tool_dmarag_table_data($courseid)
         $timecreated = userdate($record->timecreated, '');
         $timemodified = userdate($record->timemodified, get_string('strftimedatetime'));
 
-        $delete = html_writer::link(new moodle_url('/admin/tool/dmarag/delete.php', ['id' => $record->courseid, 'tool_dmarag' => $record->id, 'delete'=>1]), get_string('delete'));
+        //$delete = html_writer::link(new moodle_url('/admin/tool/dmarag/delete.php', ['id' => $record->courseid, 'tool_dmarag' => $record->id, 'delete'=>1]), get_string('delete'));
+
+        $deleteurl = new moodle_url('/admin/tool/dmarag/delete.php', ['id' => $record->courseid, 'tool_dmarag' => $record->id, 'delete'=>1]);
+
+       // $deleteurl = new moodle_url('/admin/tool/dmarag/index.php', ['delete' => $record->id, 'id' => $courseid, 'sesskey' => sesskey()]);
+
+        $delete = html_writer::link($deleteurl, get_string('delete'), ['data-action' => 'deleteentry']);
+
 
         $data[] = array($id, $name, $description, $completed, $priority, $timecreated, $timemodified, $delete);
     }
 
     return $data;
-
 }
+
