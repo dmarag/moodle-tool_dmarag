@@ -12,22 +12,6 @@ require_login($courseid);
 $context = context_course::instance($courseid);
 require_capability('tool/dmarag:view', $context);
 
-if (!has_capability('tool/dmarag:view', $context))
-{
-	
-}
-
-# get course object 
-$course_shortname = "";
-$course_fullname = "";
-//$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-$course = $DB->get_record_sql("SELECT * FROM {course} WHERE id = ?", [$courseid]);
-if(!empty($course))
-{
-	$course_shortname = format_string($course->shortname);
-	$course_fullname = format_string($course->fullname);
-}
-
 // Set up the page.
 $title = get_string('pluginname', 'tool_dmarag');
 $pagetitle = $title;
@@ -36,38 +20,56 @@ $url = new moodle_url('/admin/tool/dmarag/index.php', ['id' => $courseid]);
 $PAGE->set_url($url);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
- 
-echo $OUTPUT->header(); 
-echo $OUTPUT->heading($pagetitle);
 
-/*$out .= html_writer::tag('br', '');
-$out .= html_writer::start_div('hello_word_div');
-$out .= html_writer::start_span('hello_word_span') . ''.get_string("hello_word", "tool_dmarag").'' . html_writer::end_span();
-$out .= html_writer::end_div();
-$out .= html_writer::tag('br', '');
-$out .= html_writer::start_div('course_info_div');
-$out .= get_string("course");
-$out .= html_writer::tag('br', '');
-$out .= 'id: '.$courseid;
-$out .= html_writer::tag('br', '');
-$out .= get_string("shortname").': ';
-$out .= $course_shortname;
-$out .= html_writer::tag('br', '');
-$out .= get_string("fullname").': ';
-$out .= $course_fullname;
-$out .= html_writer::tag('br', '');
-html_writer::end_div();*/
+# get page renderer 
+$output = $PAGE->get_renderer('tool_dmarag');
+echo $output->header();
+
+//echo $OUTPUT->header();
 
 
-$table = new tool_dmarag_table('tool_dmarag', $courseid);
-$table->out(0, false);
+$headings = array(get_string('table_title', 'tool_dmarag'), "", "", "", "", "", "", "" );
+$align = array('left'); 
 
-// Link to add new entry.
-if (has_capability('tool/dmarag:edit', $context)) {
-    echo html_writer::div(html_writer::link(new moodle_url('/admin/tool/dmarag/edit.php', ['id' => $courseid]), get_string('new')));
+$content = array();
+$content = get_tool_dmarag_table_data($courseid);
+
+
+//echo $output->render_index($headings, $align, $content);
+
+//print_r($content);
+//echo '<br/>';echo '<br/>';echo '<br/>';echo '<br/>';
+
+
+$indexpage = new \tool_dmarag\output\indexpage($headings, $content);
+
+echo $output->render_indexpage($indexpage);
+
+
+# Add new entry.
+if (has_capability('tool/dmarag:edit', $context))
+{
+    echo '</br></br>';
+    echo html_writer::div(html_writer::link(new moodle_url('/admin/tool/dmarag/edit.php', ['id' => $courseid]), get_string('add_new', 'tool_dmarag')));
 }
 
+//echo $OUTPUT->header(); 
+//echo $OUTPUT->heading($pagetitle);
 
-echo $out;
+# table data from db table tool_dmarag
+//$table = new tool_dmarag_table('tool_dmarag', $courseid);
+//$table->out(0, false);
 
-echo $OUTPUT->footer(); 
+# Add new entry.
+//if (has_capability('tool/dmarag:edit', $context)) {
+//    echo html_writer::div(html_writer::link(new moodle_url('/admin/tool/dmarag/edit.php', ['id' => $courseid]), get_string('new')));
+//}
+
+//echo $OUTPUT->footer();
+echo $output->footer();
+
+# RENDERER
+# In the pre-renderer index file, I used PHP's echo statement with Moodle's global $OUTPUT object and html_writer helper class to display the screen output. 
+# The global $OUTPUT object is the global renderer object available to any script in Moodle. 
+# If a script is not using renderers, it will likely use this object to perform its necessary output operations. 
+# When a plugin uses its own renderer, it instantiates its own renderer object and uses it in place of $OUTPUT.

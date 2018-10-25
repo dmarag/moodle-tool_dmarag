@@ -12,5 +12,9 @@ $string['course_shortname'] = 'Course';
 
 $string['delete_this_record'] = 'Delete this record';
 $string['description'] = 'Description';
-$string['definition'] = 'Definition';
+
+$string['table_title'] = 'List';
+$string['add_new'] = 'Add new';
+
+$string['confirmdeleteentry'] = '  Are you sure to delete this entry?';
 

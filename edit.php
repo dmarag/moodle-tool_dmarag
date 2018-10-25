@@ -39,7 +39,7 @@ $title = get_string('pluginname', 'tool_dmarag');
 $pagetitle = $title;
 
 
-$url = new moodle_url('/admin/tool/dmarag/edit.php?id='.courseid);
+$url = new moodle_url('/admin/tool/dmarag/edit.php?id='.$courseid);
 $PAGE->set_url($url);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
@@ -56,17 +56,18 @@ if($edit == 1)
 
     //prepare data
     $entry = file_prepare_standard_editor($entry, 'description', $descriptionoptions, $context, 'tool_dmarag', 'entry', $entry->id);
+
     $mform = new tool_dmarag_form(null, array('current'=>$entry, 'descriptionoptions'=>$descriptionoptions));
 
 }
 else{
-    $mform = new tool_dmarag_form( null, array('current'=>$entry) );
+    $mform = new tool_dmarag_form( null, array('current'=>$entry, 'descriptionoptions'=>null) );
 }
 
 
 
 //Form processing and displaying is done here
-$return_url = new moodle_url('/admin/tool/dmarag/index.php', ['id' => $courseid]);
+$return_url = new moodle_url($CFG->wwwroot.'/admin/tool/dmarag/index.php', ['id' => $courseid]);
 if ($mform->is_cancelled())
 {
     //Handle form cancel operation, if cancel button is present on form
@@ -74,8 +75,17 @@ if ($mform->is_cancelled())
 }
 else if ($data = $mform->get_data())
 {
-    $entry = dmarag_edit_entry($data, $course, $context);
-    redirect($return_url);
+    if($data->tool_dmarag_id >0)
+    {
+        $entry = dmarag_edit_entry($data, $course, $data->tool_dmarag_id, $context);
+    }
+    else{
+        $entry = dmarag_addnew_entry($data, $course, $context);
+    }
+
+
+    //echo html_writer::div(html_writer::link(new moodle_url($CFG->wwwroot.'/admin/tool/dmarag/index.php', ['id' => $courseid]), get_string('Επιτυχία ')));
+    redirect(new moodle_url($CFG->wwwroot.'/admin/tool/dmarag/index.php', ['id' => $courseid]));
 }
 else {
     // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
